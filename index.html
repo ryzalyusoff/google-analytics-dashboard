@@ -3,9 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <title>Google Analytics Dashboard</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Load Google JSAPI -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
     <style>
       html, body{
         height:100%;
+        padding: 30px;
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
         font-size: 14px;
         color: #333;
@@ -13,22 +26,48 @@
 
       h1{
         text-align: center;
+        margin-bottom: 30px;
       }
     </style>
   </head>
-
   <body>
-    <h1>Google Analytics Dashboard</h1>
-  </body>
 
+    <h1>Google Analytics Dashboard</h1>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div id="embed-api-auth-container"></div>
+        <div id="view-selector-1-container"></div>
+        <div id="date-range-selector-1-container"></div>
+      </div>
+    </div>
+
+
+  </body>
 </html>
 
 <script>
-  //Load the Embed API
-  (function (w, d, s, g, js, fs) {
-      g = w.gapi || (w.gapi = {}); g.analytics = { q: [], ready: function (f) { this.q.push(f); } };
-      js = d.createElement(s); fs = d.getElementsByTagName(s)[0];
-      js.src = 'https://apis.google.com/js/platform.js';
-      fs.parentNode.insertBefore(js, fs); js.onload = function () { g.load('analytics'); };
-  }(window, document, 'script'));
+  (function(w,d,s,g,js,fs){
+    g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
+    js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
+    js.src='https://apis.google.com/js/platform.js';
+    fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
+  }(window,document,'script'));
+
+
+  gapi.analytics.ready(function() {
+
+    /**
+     * Authorize the user immediately if the user has already granted access.
+     * If no access has been created, render an authorize button inside the
+     * element with the ID "embed-api-auth-container".
+     */
+    gapi.analytics.auth.authorize({
+      container: 'embed-api-auth-container',
+      clientid: '443036188844-118udhs8cjjmffiav4o4ahrartqiqb52.apps.googleusercontent.com'
+    });
+
+
+  });
+
 </script>
