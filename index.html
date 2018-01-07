@@ -13,7 +13,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- Load Google JSAPI -->
+    <script>
+      (function(w,d,s,g,js,fs){
+        g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
+        js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
+        js.src='https://apis.google.com/js/platform.js';
+        fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
+      }(window,document,'script'));
+    </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <!-- Include the ViewSelector2 component script. -->
+    <script src="view-selector2.js"></script>
+
+    <!-- Include the DateRangeSelector component script. -->
+    <script src="date-range-selector.js"></script>
 
     <style>
       html, body{
@@ -37,23 +51,21 @@
     <div class="row">
       <div class="col-md-12">
         <div id="embed-api-auth-container"></div>
-        <div id="view-selector-1-container"></div>
-        <div id="date-range-selector-1-container"></div>
+        <div id="view-selector-container"></div>
+        <div id="date-range-selector-container"></div>
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-12">
+        <div id="chart-1-container"></div>
+      </div>
+    </div>
 
   </body>
 </html>
 
 <script>
-  (function(w,d,s,g,js,fs){
-    g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
-    js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
-    js.src='https://apis.google.com/js/platform.js';
-    fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
-  }(window,document,'script'));
-
 
   gapi.analytics.ready(function() {
 
@@ -67,6 +79,70 @@
       clientid: '443036188844-118udhs8cjjmffiav4o4ahrartqiqb52.apps.googleusercontent.com'
     });
 
+    /**
+     * Create a new DataChart instance with the given query parameters
+     * and Google chart options. It will be rendered inside an element
+     * with the id "chart-container".
+     */
+    var dataChart1 = new gapi.analytics.googleCharts.DataChart({
+      query: {
+        metrics: 'ga:sessions',
+        dimensions: 'ga:date'
+      },
+      chart: {
+        container: 'chart-1-container',
+        type: 'LINE',
+        options: {
+          width: '100%'
+        }
+      }
+    });
+
+    /**
+     * Create a new DateRangeSelector instance to be rendered inside of an
+     * element with the id "date-range-selector-1-container", set its date range
+     * and then render it to the page.
+    */
+    var dateRange = {
+      'start-date': '30daysAgo',
+      'end-date': 'yesterday'
+    };
+    var dateRangeSelector = new gapi.analytics.ext.DateRangeSelector({
+      container: 'date-range-selector-container'
+    })
+    .set(dateRange)
+    .execute();
+
+    /**
+     * Create a ViewSelector for the first view to be rendered inside of an
+     * element with the id "view-selector-container".
+     */
+    var viewSelector = new gapi.analytics.ViewSelector({
+      container: 'view-selector-container'
+    });
+
+    // Render view selector to the page.
+    viewSelector.set(dateRange).execute();
+
+    /**
+     * Update the first dataChart when the first view selecter is changed.
+     */
+    viewSelector.on('change', function(ids) {
+      dataChart1.set({query: {ids: ids}}).execute();
+    });
+
+    /**
+     * Register a handler to run whenever the user changes the date range from
+     * the first datepicker. The handler will update the first dataChart
+     * instance as well as change the dashboard subtitle to reflect the range.
+     */
+    dateRangeSelector.on('change', function(data) {
+      dataChart1.set({query: data}).execute();
+
+      // Update the "from" dates text.
+      var datefield = document.getElementById('from-dates');
+      datefield.textContent = data['start-date'] + '&mdash;' + data['end-date'];
+    });
 
   });
 
