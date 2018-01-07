@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Google Analytics Dashboard</title>
+    <style>
+      html, body{
+        height:100%;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        color: #333;
+      }
+
+      h1{
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Google Analytics Dashboard</h1>
+  </body>
+
+</html>
+
+<script>
+  //Load the Embed API
+  (function (w, d, s, g, js, fs) {
+      g = w.gapi || (w.gapi = {}); g.analytics = { q: [], ready: function (f) { this.q.push(f); } };
+      js = d.createElement(s); fs = d.getElementsByTagName(s)[0];
+      js.src = 'https://apis.google.com/js/platform.js';
+      fs.parentNode.insertBefore(js, fs); js.onload = function () { g.load('analytics'); };
+  }(window, document, 'script'));
+</script>
