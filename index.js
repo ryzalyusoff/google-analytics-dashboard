@@ -7,7 +7,7 @@ gapi.analytics.ready(function() {
    */
   gapi.analytics.auth.authorize({
     container: 'embed-api-auth-container',
-    clientid: '443036188844-118udhs8cjjmffiav4o4ahrartqiqb52.apps.googleusercontent.com'
+    clientid: 'INSERT YOUR CLIENT ID HERE'
   });
 
   var dataCharts = [];
