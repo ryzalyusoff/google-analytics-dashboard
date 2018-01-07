@@ -51,16 +51,33 @@
     <div class="row">
       <div class="col-md-12">
         <div id="embed-api-auth-container"></div>
+        <br/>
         <div id="view-selector-container"></div>
+        <br/>
         <div id="date-range-selector-container"></div>
       </div>
     </div>
 
+    <!-- Line Graph -->
     <div class="row">
       <div class="col-md-12">
         <div id="chart-1-container"></div>
       </div>
     </div>
+
+    <div class="row">
+      <!-- GEO Map -->
+      <div class="col-xs-12 col-sm-6 col-md-6">
+        <div id="chart-2-container"></div>
+      </div>
+
+      <!-- PIE Chart -->
+      <div class="col-xs-12 col-sm-6 col-md-6">
+        <div id="chart-3-container"></div>
+      </div>
+    </div>
+
+    <br/><br/>
 
   </body>
 </html>
@@ -78,6 +95,8 @@
       container: 'embed-api-auth-container',
       clientid: '443036188844-118udhs8cjjmffiav4o4ahrartqiqb52.apps.googleusercontent.com'
     });
+
+    var dataCharts = [];
 
     /**
      * Create a new DataChart instance with the given query parameters
@@ -97,6 +116,41 @@
         }
       }
     });
+    dataCharts.push(dataChart1);
+
+    // GEO Map
+    var dataChart2 = new gapi.analytics.googleCharts.DataChart({
+      query: {
+        metrics: 'ga:sessions',
+        dimensions: 'ga:country',
+        'max-results': 6,
+        sort: '-ga:sessions'
+      },
+      chart: {
+        container: 'chart-2-container',
+        type: 'GEO'
+      }
+    });
+    dataCharts.push(dataChart2);
+
+    // Pie Chart
+    var dataChart3 = new gapi.analytics.googleCharts.DataChart({
+      query: {
+        metrics: 'ga:sessions',
+        dimensions: 'ga:country',
+        'max-results': 6,
+        sort: '-ga:sessions'
+      },
+      chart: {
+        container: 'chart-3-container',
+        type: 'PIE',
+        options: {
+          width: '100%',
+          pieHole: 4/9
+        }
+      }
+    });
+    dataCharts.push(dataChart3);
 
     /**
      * Create a new DateRangeSelector instance to be rendered inside of an
@@ -128,7 +182,9 @@
      * Update the first dataChart when the first view selecter is changed.
      */
     viewSelector.on('change', function(ids) {
-      dataChart1.set({query: {ids: ids}}).execute();
+      dataCharts.forEach(function(dataChart) {
+        dataChart.set({query: {ids: ids}}).execute();
+      });
     });
 
     /**
@@ -137,7 +193,9 @@
      * instance as well as change the dashboard subtitle to reflect the range.
      */
     dateRangeSelector.on('change', function(data) {
-      dataChart1.set({query: data}).execute();
+      dataCharts.forEach(function(dataChart) {
+        dataChart.set({query: data}).execute();
+      });
 
       // Update the "from" dates text.
       var datefield = document.getElementById('from-dates');
